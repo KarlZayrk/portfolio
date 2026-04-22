@@ -3,6 +3,8 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest) {
   const { message, history } = await req.json();
 
+  console.log("API KEY:", process.env.GEMINI_API_KEY?.slice(0, 8));
+
   const SYSTEM_PROMPT = `Sei un antico oracolo fantasy che conosce tutto su Karl, uno sviluppatore software. 
 Rispondi SEMPRE in italiano, in modo misterioso e poetico come un saggio fantasy, ma con informazioni reali su Karl.
 
