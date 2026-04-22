@@ -33,25 +33,21 @@ export default function TorreChat() {
     setLoading(true);
 
     try {
-      const { GoogleGenerativeAI } = await import("@google/generative-ai");
-      const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY!);
-      const model = genAI.getGenerativeModel({ model: "gemini-3-flash-preview" });
+      const history = messages
+        .filter((_, i) => i > 0)
+        .map((m) => ({
+          role: m.role === "user" ? "user" : "model",
+          parts: [{ text: m.text }],
+        }));
 
-      const history = [
-        { role: "user", parts: [{ text: SYSTEM_PROMPT }] },
-        { role: "model", parts: [{ text: "Capito, risponderò come l'Oracolo della Torre dell'Arcano." }] },
-        ...messages
-          .filter((_, i) => i > 0)
-          .map((m) => ({
-            role: m.role === "user" ? "user" : "model",
-            parts: [{ text: m.text }],
-          })),
-      ];
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: userMessage, history }),
+      });
 
-      const chat = model.startChat({ history });
-      const result = await chat.sendMessage(userMessage);
-      const text = result.response.text();
-      setMessages((prev) => [...prev, { role: "ai", text }]);
+      const data = await res.json();
+      setMessages((prev) => [...prev, { role: "ai", text: data.text }]);
     } catch (e) {
       console.log(e);
       setMessages((prev) => [...prev, { role: "ai", text: "Le visioni si sono oscurate... Riprova tra poco." }]);
