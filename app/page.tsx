@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import TorreChat from "./TorreChat";
 
 const locations = [
   {
@@ -98,8 +99,14 @@ export default function Home() {
           >
             ✕ Chiudi
           </button>
-          <h2 className="text-3xl font-bold text-[#c8a96e] mb-4">{active.name}</h2>
-          <p className="text-[#a07850]">{active.description}</p>
+          {active.id === 3 ? (
+            <TorreChat />
+          ) : (
+            <>
+              <h2 className="text-3xl font-bold text-[#c8a96e] mb-4">{active.name}</h2>
+              <p className="text-[#a07850]">{active.description}</p>
+            </>
+          )}
         </div>
       )}
 
